@@ -7,10 +7,15 @@ import com.testproject.directory.entity.EntityType;
 import java.util.List;
 
 public interface EntityTypeService {
-    List<EntityTypeService> getAll();
+    List<EntityType> getAll();
+
     EntityType getById(Integer id);
+
     EntityType getByName(String name);
+
     EntityType create(Directory directory);
+
     void deleteById(Integer id);
+
     EntityType addAttribute(Integer entityTypeId, Attribute attribute);
 }
