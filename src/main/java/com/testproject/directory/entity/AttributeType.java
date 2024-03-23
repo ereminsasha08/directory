@@ -1,6 +1,6 @@
 package com.testproject.directory.entity;
 
-public enum Type {
+public enum AttributeType {
     STRING,
     INTEGER,
     DATA

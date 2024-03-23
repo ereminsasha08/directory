@@ -1,7 +1,6 @@
 package com.testproject.directory.controller;
 
 import com.testproject.directory.entity.Attribute;
-import com.testproject.directory.entity.Directory;
 import com.testproject.directory.entity.EntityType;
 import com.testproject.directory.service.EntityTypeService;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +33,8 @@ public class EntityTypeController {
     }
 
     @PostMapping("/save")
-    public EntityType save(@RequestBody Directory directory) {
-        return service.create(directory);
+    public EntityType save(@RequestBody EntityType entityType) {
+        return service.create(entityType);
     }
 
     @DeleteMapping("/{id}")

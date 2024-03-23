@@ -1,7 +1,6 @@
 package com.testproject.directory.service;
 
 import com.testproject.directory.entity.Attribute;
-import com.testproject.directory.entity.Directory;
 import com.testproject.directory.entity.EntityType;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public interface EntityTypeService {
 
     EntityType getByName(String name);
 
-    EntityType create(Directory directory);
+    EntityType create(EntityType entityType);
 
     void deleteById(Integer id);
 
