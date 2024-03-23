@@ -1,5 +1,6 @@
 package com.testproject.directory.controller;
 
+import com.testproject.directory.dto.DirectoryDto;
 import com.testproject.directory.entity.Attribute;
 import com.testproject.directory.entity.Directory;
 import com.testproject.directory.entity.EntityType;
@@ -17,7 +18,6 @@ import static org.springframework.http.HttpStatus.OK;
 public class DirectoryController {
     public static final String URL = "/api/v1/directories";
     private final DirectoryService service;
-
     @GetMapping
     public List<Directory> getAll() {
         return service.getAll();
@@ -34,7 +34,7 @@ public class DirectoryController {
     }
 
     @PostMapping("/save")
-    public Directory save(@RequestBody Directory directory) {
+    public Directory save(@RequestBody DirectoryDto directory) {
         return service.create(directory);
     }
 

@@ -1,11 +1,15 @@
 package com.testproject.directory.dto;
 
 import com.testproject.directory.entity.Directory;
-import org.jooq.Record;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
-
-public class DirectoryData {
+@Data
+@Builder
+@AllArgsConstructor
+public class DirectoryDataDto {
     Directory directory;
     List<?> data;
 }
