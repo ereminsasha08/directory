@@ -35,7 +35,21 @@ public class CatalogDataRepository implements DirectoryDataRepository {
 
     @Override
     public void deleteById(Directory directory, Integer id) {
+        deleteLink(directory, id);
+        deleteData(directory, id);
+    }
 
+
+    private void deleteLink(Directory directory, Integer id) {
+        String linkName = NamingUtil.tableLinkName(directory);
+        String delete = "delete from " + linkName + " where id = " + id;
+        jdbcTemplate.update(delete);
+    }
+
+    private void deleteData(Directory directory, Integer id) {
+        String catalogName = NamingUtil.tableName(directory);
+        String delete = "delete from " + catalogName + " where id = " + id;
+        jdbcTemplate.update(delete);
     }
 }
 

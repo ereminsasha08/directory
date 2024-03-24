@@ -4,6 +4,7 @@ import com.testproject.directory.dto.DirectoryDataDto;
 import com.testproject.directory.entity.Directory;
 import com.testproject.directory.repository.DirectoryDataRepository;
 import com.testproject.directory.service.DirectoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +29,15 @@ public class DirectoryDataServiceImp implements DirectoryDataService {
     }
 
     @Override
+    @Transactional
     public DirectoryDataDto insertData(Integer directoryId, Map<String, Object> data) {
         return null;
     }
 
     @Override
-    public void deleteDataById(Directory directory, Integer id) {
+    @Transactional
+    public void deleteDataById(Integer directoryId, Integer id) {
+        Directory directory = directoryService.getById(directoryId);
         DirectoryDataRepository dataRepository = dataStrategyService.getDataRepository(directory.getStructureType());
         dataRepository.deleteById(directory, id);
     }
