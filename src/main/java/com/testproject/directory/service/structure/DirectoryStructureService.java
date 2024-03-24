@@ -1,8 +1,8 @@
-package com.testproject.directory.repository;
+package com.testproject.directory.service.structure;
 
 import com.testproject.directory.entity.Directory;
 
-public interface DirectoryStructureRepository {
+public interface DirectoryStructureService {
     void createStructure(Directory directory);
 
     void deleteStructure(Directory directory);

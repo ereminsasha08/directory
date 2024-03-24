@@ -4,12 +4,15 @@ import com.testproject.directory.entity.Directory;
 import com.testproject.directory.repository.DirectoryStructureRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public class ConstantStructureRepository implements DirectoryStructureRepository {
     @Override
     public void createStructure(Directory directory) {
+        throw new RuntimeException("Not supported");
+    }
 
+    @Override
+    public void deleteStructure(Directory directory) {
+        throw new RuntimeException("Not supported");
     }
 }

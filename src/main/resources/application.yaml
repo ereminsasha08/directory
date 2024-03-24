@@ -7,15 +7,19 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   h2:
     console:
       path: /h2-console
       settings.trace: false
       settings.web-allow-others: false
   datasource:
-    url: jdbc:h2:mem:mydb
-    username: sa
+#    url: jdbc:h2:mem:mydb
+#    username: sa
+#    password:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
     password: password
-    driverClassName: org.h2.Driver
-    jpa:
-      spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+    driverClassName: org.postgresql.Driver

@@ -1,11 +1,11 @@
 package com.testproject.directory.service;
 
-import com.testproject.directory.dto.DirectoryDataDto;
 import com.testproject.directory.dto.DirectoryDto;
 import com.testproject.directory.entity.Directory;
 import com.testproject.directory.entity.EntityType;
 import com.testproject.directory.repository.DirectoryRepository;
 import com.testproject.directory.repository.EntityTypeRepository;
+import com.testproject.directory.service.structure.DirectoryStructureService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class DirectoryServiceImp implements DirectoryService {
     private final DirectoryRepository repository;
     private final EntityTypeRepository entityTypeRepository;
-    private final DirectoryDataService directoryDataService;
+    private final DirectoryStructureService directoryStructureService;
 
     @Override
     public List<Directory> getAll() {
@@ -46,22 +46,15 @@ public class DirectoryServiceImp implements DirectoryService {
                 .entityType(entityType)
                 .structureType(directory.getStructureType())
                 .build());
-        directoryDataService.createStructure(created);
+        directoryStructureService.createStructure(created);
         return created;
     }
 
     @Override
+    @Transactional
     public void deleteById(Integer id) {
+        Directory directory = getById(id);
+        directoryStructureService.deleteStructure(directory);
         repository.deleteById(id);
-    }
-
-    @Override
-    public DirectoryDataDto getDataByDirectoryId(Integer directoryId) {
-        Directory directory = getById(directoryId);
-        List<?> dataForDirectory = directoryDataService.getDataForDirectory(directory);
-        return DirectoryDataDto.builder()
-                .directory(directory)
-                .data(dataForDirectory)
-                .build();
     }
 }
