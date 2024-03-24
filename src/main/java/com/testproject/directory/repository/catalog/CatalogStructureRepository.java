@@ -42,7 +42,7 @@ public class CatalogStructureRepository implements DirectoryStructureRepository 
         String tableLinkName = NamingUtil.tableLinkName(directory);
         CreateTableElementListStep table = dslContext.dsl().createTableIfNotExists(tableLinkName);
         String catalog_link = table
-                .column("id", SQLDataType.INTEGER.identity(true))
+                .column("id", SQLDataType.INTEGER.nullable(false))
                 .column("parent_id", SQLDataType.INTEGER.nullable(false))
                 .column("is_folder", SQLDataType.BOOLEAN.nullable(false))
                 .getSQL();

@@ -15,6 +15,11 @@ public class ConstantDataRepository implements DirectoryDataRepository {
     }
 
     @Override
+    public List<Map<String, Object>> findDataForDirectoryById(Directory directory, Integer id) {
+        throw new RuntimeException("Not supported");
+    }
+
+    @Override
     public List<Map<String, Object>> insertData(Directory directory, Map<String, Object> data) {
         throw new RuntimeException("Not supported");
     }

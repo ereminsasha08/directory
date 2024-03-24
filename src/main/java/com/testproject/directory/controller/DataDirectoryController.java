@@ -5,6 +5,8 @@ import com.testproject.directory.service.data.DirectoryDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -16,6 +18,16 @@ public class DataDirectoryController {
     @GetMapping("/{id}")
     public DirectoryDataDto getById(@PathVariable Integer id) {
         return directoryDataService.getDataByDirectoryId(id);
+    }
+
+    @GetMapping("/{catalogId}/{dataId}")
+    public DirectoryDataDto getDataById(@PathVariable Integer catalogId, @PathVariable Integer dataId) {
+        return directoryDataService.getDataById(catalogId, dataId);
+    }
+
+    @PostMapping("/{id}")
+    public DirectoryDataDto insertData(@PathVariable Integer id, @RequestBody Map<String, Object> data) {
+        return directoryDataService.insertData(id, data);
     }
 
     @DeleteMapping("/{catalogId}/{dataId}")

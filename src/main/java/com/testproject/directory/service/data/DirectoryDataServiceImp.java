@@ -29,9 +29,26 @@ public class DirectoryDataServiceImp implements DirectoryDataService {
     }
 
     @Override
+    public DirectoryDataDto getDataById(Integer directoryId, Integer dataId) {
+        Directory directory = directoryService.getById(directoryId);
+        DirectoryDataRepository dataRepository = dataStrategyService.getDataRepository(directory.getStructureType());
+        List<Map<String, Object>> dataForDirectory = dataRepository.findDataForDirectoryById(directory, dataId);
+        return DirectoryDataDto.builder()
+                .directory(directory)
+                .data(dataForDirectory)
+                .build();
+    }
+
+    @Override
     @Transactional
     public DirectoryDataDto insertData(Integer directoryId, Map<String, Object> data) {
-        return null;
+        Directory directory = directoryService.getById(directoryId);
+        DirectoryDataRepository dataRepository = dataStrategyService.getDataRepository(directory.getStructureType());
+        List<Map<String, Object>> inserted = dataRepository.insertData(directory, data);
+        return DirectoryDataDto.builder()
+                .directory(directory)
+                .data(inserted)
+                .build();
     }
 
     @Override
