@@ -9,7 +9,8 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+#        dialect: org.hibernate.dialect.H2Dialect
+          dialect: org.hibernate.dialect.PostgreSQLDialect
   h2:
     console:
       path: /h2-console
@@ -19,6 +20,7 @@ spring:
 #    url: jdbc:h2:mem:mydb
 #    username: sa
 #    password:
+#    driver-class-name: org.h2.Driver
     url: jdbc:postgresql://localhost:5432/postgres
     username: user
     password: password
