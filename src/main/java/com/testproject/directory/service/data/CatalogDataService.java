@@ -3,7 +3,8 @@ package com.testproject.directory.service.data;
 import com.testproject.directory.dto.CatalogDataDto;
 import com.testproject.directory.dto.CatalogDto;
 import com.testproject.directory.entity.Directory;
-import com.testproject.directory.repository.DirectoryDataRepository;
+import com.testproject.directory.repository.catalog.CatalogDataRepository;
+import com.testproject.directory.service.DirectoryDataService;
 import com.testproject.directory.service.DirectoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +15,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CatalogDataService implements DirectoryDataService<CatalogDto, CatalogDataDto> {
-    private final DataStrategyService dataStrategyService;
+    private final CatalogDataRepository catalogDataRepository;
     private final DirectoryService directoryService;
 
     @Override
     public CatalogDto getDataByDirectoryId(Integer directoryId) {
         Directory directory = directoryService.getById(directoryId);
-        DirectoryDataRepository<CatalogDataDto> dataRepository = dataStrategyService.getDataRepository(directory.getStructureType());
-        List<CatalogDataDto> dataForDirectory = dataRepository.findDataForDirectory(directory);
+        List<CatalogDataDto> dataForDirectory = catalogDataRepository.findDataForDirectory(directory);
         return CatalogDto.builder()
                 .directory(directory)
                 .data(dataForDirectory)
@@ -31,8 +31,7 @@ public class CatalogDataService implements DirectoryDataService<CatalogDto, Cata
     @Override
     public CatalogDto getDataById(Integer directoryId, Integer dataId) {
         Directory directory = directoryService.getById(directoryId);
-        DirectoryDataRepository<CatalogDataDto> dataRepository = dataStrategyService.getDataRepository(directory.getStructureType());
-        CatalogDataDto dataForDirectory = dataRepository.findDataForDirectoryById(directory, dataId);
+        CatalogDataDto dataForDirectory = catalogDataRepository.findDataForDirectoryById(directory, dataId);
         return CatalogDto.builder()
                 .directory(directory)
                 .data(List.of(dataForDirectory))
@@ -43,8 +42,7 @@ public class CatalogDataService implements DirectoryDataService<CatalogDto, Cata
     @Transactional
     public CatalogDto insertData(Integer directoryId, CatalogDataDto data) {
         Directory directory = directoryService.getById(directoryId);
-        DirectoryDataRepository<CatalogDataDto> dataRepository = dataStrategyService.getDataRepository(directory.getStructureType());
-        CatalogDataDto inserted = dataRepository.insertData(directory, data);
+        CatalogDataDto inserted = catalogDataRepository.insertData(directory, data);
         return CatalogDto.builder()
                 .directory(directory)
                 .data(List.of(inserted))
@@ -55,7 +53,6 @@ public class CatalogDataService implements DirectoryDataService<CatalogDto, Cata
     @Transactional
     public void deleteDataById(Integer directoryId, Integer id) {
         Directory directory = directoryService.getById(directoryId);
-        DirectoryDataRepository<CatalogDataDto> dataRepository = dataStrategyService.getDataRepository(directory.getStructureType());
-        dataRepository.deleteById(directory, id);
+        catalogDataRepository.deleteById(directory, id);
     }
 }

@@ -1,4 +1,4 @@
-package com.testproject.directory.service.data;
+package com.testproject.directory.service;
 
 public interface DirectoryDataService<T, R> {
     T getDataByDirectoryId(Integer directoryId);

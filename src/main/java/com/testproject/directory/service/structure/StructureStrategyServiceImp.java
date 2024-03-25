@@ -18,7 +18,6 @@ public class StructureStrategyServiceImp implements StructureStrategyService {
         return switch (structureType) {
             case CATAlOG -> catalogDataRepository;
             case CONSTANT -> constantDataRepository;
-            default -> throw new IllegalStateException("Unexpected value: " + structureType);
         };
     }
 }
