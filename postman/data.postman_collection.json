@@ -19,7 +19,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/directories/data/1",
+					"raw": "http://localhost:8080/api/v1/catalog/data/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -28,7 +28,7 @@
 					"path": [
 						"api",
 						"v1",
-						"directories",
+						"catalog",
 						"data",
 						"1"
 					]
@@ -48,7 +48,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/directories/data/1/1",
+					"raw": "http://localhost:8080/api/v1/catalog/data/1/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -57,7 +57,7 @@
 					"path": [
 						"api",
 						"v1",
-						"directories",
+						"catalog",
 						"data",
 						"1",
 						"1"
@@ -85,7 +85,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/directories/data/1/1",
+					"raw": "http://localhost:8080/api/v1/catalog/data/1/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -94,7 +94,7 @@
 					"path": [
 						"api",
 						"v1",
-						"directories",
+						"catalog",
 						"data",
 						"1",
 						"1"
@@ -106,8 +106,38 @@
 		{
 			"name": "insert",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic dXNlcjpwYXNzd29yZA==",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"catalogLink\": {\n        \"parentId\": 1,\n        \"isFolder\": false\n    },\n    \"fields\": [\n        {\n            \"name\": \"name\",\n            \"value\": \"2\"\n        },\n        {\n            \"name\": \"name1\",\n            \"value\": \"2\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/catalog/data/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"catalog",
+						"data",
+						"1"
+					]
+				}
 			},
 			"response": []
 		}
