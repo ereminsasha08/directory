@@ -1,26 +1,26 @@
 package com.testproject.directory.repository.constant;
 
+import com.testproject.directory.dto.CatalogDataDto;
 import com.testproject.directory.entity.Directory;
 import com.testproject.directory.repository.DirectoryDataRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class ConstantDataRepository implements DirectoryDataRepository {
     @Override
-    public List<Map<String, Object>> findDataForDirectory(Directory directory) {
+    public List<CatalogDataDto> findDataForDirectory(Directory directory) {
         throw new RuntimeException("Not supported");
     }
 
     @Override
-    public List<Map<String, Object>> findDataForDirectoryById(Directory directory, Integer id) {
+    public CatalogDataDto findDataForDirectoryById(Directory directory, Integer id) {
         throw new RuntimeException("Not supported");
     }
 
     @Override
-    public List<Map<String, Object>> insertData(Directory directory, Map<String, Object> data) {
+    public CatalogDataDto insertData(Directory directory, CatalogDataDto data) {
         throw new RuntimeException("Not supported");
     }
 

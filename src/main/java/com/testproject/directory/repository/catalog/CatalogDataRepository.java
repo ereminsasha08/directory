@@ -1,21 +1,25 @@
 package com.testproject.directory.repository.catalog;
 
+import com.testproject.directory.dto.CatalogDataDto;
+import com.testproject.directory.dto.CatalogLink;
 import com.testproject.directory.entity.Directory;
 import com.testproject.directory.repository.DirectoryDataRepository;
 import com.testproject.directory.util.NamingUtil;
-import com.testproject.directory.util.ParameterForInsert;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static java.sql.PreparedStatement.*;
+import static java.sql.PreparedStatement.RETURN_GENERATED_KEYS;
+import static org.jooq.impl.DSL.field;
+import static org.jooq.impl.DSL.table;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,18 +28,19 @@ public class CatalogDataRepository implements DirectoryDataRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Map<String, Object>> findDataForDirectory(Directory directory) {
+    public List<CatalogDataDto> findDataForDirectory(Directory directory) {
         String tableLinkName = NamingUtil.tableLinkName(directory);
         String tableName = NamingUtil.tableName(directory);
         String sql = dslContext.select()
                 .from(tableLinkName)
                 .leftJoin(tableName).on(tableLinkName + ".id = " + tableName + ".id")
                 .getSQL();
-        return jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+        return maps.stream().map(map -> new CatalogDataDto(directory, map)).toList();
     }
 
     @Override
-    public List<Map<String, Object>> findDataForDirectoryById(Directory directory, Integer dataId) {
+    public CatalogDataDto findDataForDirectoryById(Directory directory, Integer dataId) {
         String tableLinkName = NamingUtil.tableLinkName(directory);
         String tableName = NamingUtil.tableName(directory);
         String sql = dslContext.select()
@@ -43,42 +48,40 @@ public class CatalogDataRepository implements DirectoryDataRepository {
                 .leftJoin(tableName).on(tableLinkName + ".id = " + tableName + ".id")
                 .where(tableName + ".id = " + dataId)
                 .getSQL();
-        return jdbcTemplate.queryForList(sql);
+        Map<String, Object> map = jdbcTemplate.queryForMap(sql);
+        return new CatalogDataDto(directory, map);
+
     }
 
     @Override
-    public List<Map<String, Object>> insertData(Directory directory, Map<String, Object> data) {
+    public CatalogDataDto insertData(Directory directory, CatalogDataDto data) {
         int id = insertIntoCatalog(directory, data);
-        insertIntoLink(directory, data, id);
+        insertIntoLink(directory, data.getCatalogLink(), id);
         return findDataForDirectoryById(directory, id);
     }
 
 
-    private int insertIntoCatalog(Directory directory, Map<String, Object> data) {
+    private int insertIntoCatalog(Directory directory, CatalogDataDto data) {
         String tableName = NamingUtil.tableName(directory);
-        ParameterForInsert parameterForInsert = NamingUtil.parameterForInsert(directory);
-        String insertSql = "insert into " + tableName + parameterForInsert.getPrepareForInsert();
+        List<Field<?>> names = new ArrayList<>();
+        List<Field<Object>> values = new ArrayList<>();
+        data.getFields().forEach(a -> {
+            names.add(field(a.getName()));
+            values.add(field(a.getValue().toString()));
+        });
+        String insert = dslContext.insertInto(table(tableName), names).values(values).getSQL();
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        List<String> orderParameter = parameterForInsert.getOrderParameter();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection
-                    .prepareStatement(insertSql, RETURN_GENERATED_KEYS);
-            for (int i = 1; i <= orderParameter.size(); i++) {
-                ps.setObject(i, data.get(orderParameter.get(i - 1)));
-            }
-            return ps;
-        }, keyHolder);
+        jdbcTemplate.update(connection -> connection.prepareStatement(insert, RETURN_GENERATED_KEYS), keyHolder);
         return (int) keyHolder.getKeyList().getFirst().get("id");
     }
 
-    private void insertIntoLink(Directory directory, Map<String, Object> data, int id) {
+    private void insertIntoLink(Directory directory, CatalogLink catalogLink, Integer id) {
         String linkName = NamingUtil.tableLinkName(directory);
-        String s = "insert into " + linkName + " (id, parent_id, is_folder) values (?,?,?)";
-        jdbcTemplate.update(s, ps -> {
-            ps.setObject(1, id);
-            ps.setObject(2, data.get("parentId"));
-            ps.setObject(3, data.get("isFolder"));
-        });
+        String insert = dslContext
+                .insertInto(table(linkName), field("id"), field("parent_id"), field("is_folder"))
+                .values(field(id.toString()), field(catalogLink.getParentId().toString()), field(catalogLink.getIsFolder().toString()))
+                .getSQL();
+        jdbcTemplate.update(insert);
     }
 
     @Override
@@ -90,13 +93,17 @@ public class CatalogDataRepository implements DirectoryDataRepository {
 
     private void deleteLink(Directory directory, Integer id) {
         String linkName = NamingUtil.tableLinkName(directory);
-        String delete = "delete from " + linkName + " where id = " + id;
+        String delete = dslContext.delete(table(linkName))
+                .where(field("id").eq(field(id.toString())))
+                .getSQL();
         jdbcTemplate.update(delete);
     }
 
     private void deleteData(Directory directory, Integer id) {
         String catalogName = NamingUtil.tableName(directory);
-        String delete = "delete from " + catalogName + " where id = " + id;
+        String delete = dslContext.delete(table(catalogName))
+                .where(field("id").eq(field(id.toString())))
+                .getSQL();
         jdbcTemplate.update(delete);
     }
 }

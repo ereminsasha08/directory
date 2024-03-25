@@ -1,11 +1,10 @@
 package com.testproject.directory.controller;
 
+import com.testproject.directory.dto.CatalogDataDto;
 import com.testproject.directory.dto.DirectoryDataDto;
 import com.testproject.directory.service.data.DirectoryDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -26,7 +25,7 @@ public class DataDirectoryController {
     }
 
     @PostMapping("/{id}")
-    public DirectoryDataDto insertData(@PathVariable Integer id, @RequestBody Map<String, Object> data) {
+    public DirectoryDataDto insertData(@PathVariable Integer id, @RequestBody CatalogDataDto data) {
         return directoryDataService.insertData(id, data);
     }
 
