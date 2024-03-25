@@ -23,7 +23,7 @@ import static org.jooq.impl.DSL.table;
 
 @Repository
 @RequiredArgsConstructor
-public class CatalogDataRepository implements DirectoryDataRepository {
+public class CatalogDataRepository implements DirectoryDataRepository<CatalogDataDto> {
     private final DSLContext dslContext;
     private final JdbcTemplate jdbcTemplate;
 

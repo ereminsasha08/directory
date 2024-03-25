@@ -1,14 +1,11 @@
 package com.testproject.directory.service.data;
 
-import com.testproject.directory.dto.CatalogDataDto;
-import com.testproject.directory.dto.DirectoryDataDto;
+public interface DirectoryDataService<T, R> {
+    T getDataByDirectoryId(Integer directoryId);
 
-public interface DirectoryDataService {
-    DirectoryDataDto getDataByDirectoryId(Integer directoryId);
+    T getDataById(Integer directoryId, Integer dataId);
 
-    DirectoryDataDto getDataById(Integer directoryId, Integer dataId);
-
-    DirectoryDataDto insertData(Integer directoryId, CatalogDataDto data);
+    T insertData(Integer directoryId, R data);
 
     void deleteDataById(Integer directoryId, Integer dataId);
 }

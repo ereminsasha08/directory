@@ -11,10 +11,10 @@ import java.util.Map;
 @NoArgsConstructor
 public class CatalogDataDto {
     private CatalogLink catalogLink;
-    private List<Field> fields;
+    private List<FieldDto> fields;
 
     public CatalogDataDto(Directory directory, Map<String, Object> map) {
         this.catalogLink = new CatalogLink((Integer) map.get("id"), (Integer) map.get("parent_id"), (boolean) map.get("is_folder"));
-        this.fields = directory.getEntityType().getAttributes().stream().map(a -> new Field(a.getName(), map.get(a.getName()))).toList();
+        this.fields = directory.getEntityType().getAttributes().stream().map(a -> new FieldDto(a.getName(), map.get(a.getName()))).toList();
     }
 }

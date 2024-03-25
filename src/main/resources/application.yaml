@@ -10,7 +10,7 @@ spring:
     properties:
       hibernate:
 #        dialect: org.hibernate.dialect.H2Dialect
-          dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   h2:
     console:
       path: /h2-console

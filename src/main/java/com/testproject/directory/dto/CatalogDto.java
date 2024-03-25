@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-public class DirectoryDataDto {
+public class CatalogDto {
     Directory directory;
     List<CatalogDataDto> data;
 }

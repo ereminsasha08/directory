@@ -1,6 +1,5 @@
 package com.testproject.directory.repository.constant;
 
-import com.testproject.directory.dto.CatalogDataDto;
 import com.testproject.directory.entity.Directory;
 import com.testproject.directory.repository.DirectoryDataRepository;
 import org.springframework.stereotype.Repository;
@@ -8,19 +7,19 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class ConstantDataRepository implements DirectoryDataRepository {
+public class ConstantDataRepository implements DirectoryDataRepository<Object> {
     @Override
-    public List<CatalogDataDto> findDataForDirectory(Directory directory) {
+    public List<Object> findDataForDirectory(Directory directory) {
         throw new RuntimeException("Not supported");
     }
 
     @Override
-    public CatalogDataDto findDataForDirectoryById(Directory directory, Integer id) {
+    public Object findDataForDirectoryById(Directory directory, Integer id) {
         throw new RuntimeException("Not supported");
     }
 
     @Override
-    public CatalogDataDto insertData(Directory directory, CatalogDataDto data) {
+    public Object insertData(Directory directory, Object data) {
         throw new RuntimeException("Not supported");
     }
 
