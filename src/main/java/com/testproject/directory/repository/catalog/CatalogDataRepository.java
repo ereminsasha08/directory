@@ -4,7 +4,7 @@ import com.testproject.directory.dto.CatalogDataDto;
 import com.testproject.directory.dto.CatalogLink;
 import com.testproject.directory.entity.Directory;
 import com.testproject.directory.repository.DirectoryDataRepository;
-import com.testproject.directory.util.NamingUtil;
+import com.testproject.directory.util.TableUtil;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -29,8 +29,8 @@ public class CatalogDataRepository implements DirectoryDataRepository<CatalogDat
 
     @Override
     public List<CatalogDataDto> findDataForDirectory(Directory directory) {
-        String tableLinkName = NamingUtil.tableLinkName(directory);
-        String tableName = NamingUtil.tableName(directory);
+        String tableLinkName = TableUtil.getLinkName(directory);
+        String tableName = TableUtil.getName(directory);
         String sql = dslContext.select()
                 .from(tableLinkName)
                 .leftJoin(tableName).on(tableLinkName + ".id = " + tableName + ".id")
@@ -41,8 +41,8 @@ public class CatalogDataRepository implements DirectoryDataRepository<CatalogDat
 
     @Override
     public CatalogDataDto findDataForDirectoryById(Directory directory, Integer dataId) {
-        String tableLinkName = NamingUtil.tableLinkName(directory);
-        String tableName = NamingUtil.tableName(directory);
+        String tableLinkName = TableUtil.getLinkName(directory);
+        String tableName = TableUtil.getName(directory);
         String sql = dslContext.select()
                 .from(tableLinkName)
                 .leftJoin(tableName).on(tableLinkName + ".id = " + tableName + ".id")
@@ -62,7 +62,7 @@ public class CatalogDataRepository implements DirectoryDataRepository<CatalogDat
 
 
     private int insertIntoCatalog(Directory directory, CatalogDataDto data) {
-        String tableName = NamingUtil.tableName(directory);
+        String tableName = TableUtil.getName(directory);
         List<Field<?>> names = new ArrayList<>();
         List<Field<Object>> values = new ArrayList<>();
         data.getFields().forEach(a -> {
@@ -76,7 +76,7 @@ public class CatalogDataRepository implements DirectoryDataRepository<CatalogDat
     }
 
     private void insertIntoLink(Directory directory, CatalogLink catalogLink, Integer id) {
-        String linkName = NamingUtil.tableLinkName(directory);
+        String linkName = TableUtil.getLinkName(directory);
         String insert = dslContext
                 .insertInto(table(linkName), field("id"), field("parent_id"), field("is_folder"))
                 .values(field(id.toString()), field(catalogLink.getParentId().toString()), field(catalogLink.getIsFolder().toString()))
@@ -92,7 +92,7 @@ public class CatalogDataRepository implements DirectoryDataRepository<CatalogDat
 
 
     private void deleteLink(Directory directory, Integer id) {
-        String linkName = NamingUtil.tableLinkName(directory);
+        String linkName = TableUtil.getLinkName(directory);
         String delete = dslContext.delete(table(linkName))
                 .where(field("id").eq(field(id.toString())))
                 .getSQL();
@@ -100,7 +100,7 @@ public class CatalogDataRepository implements DirectoryDataRepository<CatalogDat
     }
 
     private void deleteData(Directory directory, Integer id) {
-        String catalogName = NamingUtil.tableName(directory);
+        String catalogName = TableUtil.getName(directory);
         String delete = dslContext.delete(table(catalogName))
                 .where(field("id").eq(field(id.toString())))
                 .getSQL();

@@ -3,7 +3,7 @@ package com.testproject.directory.repository.catalog;
 import com.testproject.directory.entity.Attribute;
 import com.testproject.directory.entity.Directory;
 import com.testproject.directory.repository.DirectoryStructureRepository;
-import com.testproject.directory.util.NamingUtil;
+import com.testproject.directory.util.TableUtil;
 import lombok.RequiredArgsConstructor;
 import org.jooq.CreateTableElementListStep;
 import org.jooq.DSLContext;
@@ -25,7 +25,7 @@ public class CatalogStructureRepository implements DirectoryStructureRepository 
 
 
     private void createCatalog(Directory directory) {
-        String tableName = NamingUtil.tableName(directory);
+        String tableName = TableUtil.getName(directory);
         CreateTableElementListStep table = dslContext.dsl().createTableIfNotExists(tableName);
         table.column("id", SQLDataType.INTEGER.identity(true));
         for (Attribute attribute
@@ -39,7 +39,7 @@ public class CatalogStructureRepository implements DirectoryStructureRepository 
     }
 
     private void createLink(Directory directory) {
-        String tableLinkName = NamingUtil.tableLinkName(directory);
+        String tableLinkName = TableUtil.getLinkName(directory);
         CreateTableElementListStep table = dslContext.dsl().createTableIfNotExists(tableLinkName);
         String catalog_link = table
                 .column("id", SQLDataType.INTEGER.nullable(false))
@@ -61,13 +61,13 @@ public class CatalogStructureRepository implements DirectoryStructureRepository 
     }
 
     private void dropLink(Directory directory) {
-        String tableLinkName = NamingUtil.tableLinkName(directory);
+        String tableLinkName = TableUtil.getLinkName(directory);
         String dropLink = dslContext.dropTableIfExists(tableLinkName).getSQL();
         jdbcTemplate.update(dropLink);
     }
 
     private void dropCatalog(Directory directory) {
-        String tableName = NamingUtil.tableName(directory);
+        String tableName = TableUtil.getName(directory);
         String dropTable = dslContext.dropTableIfExists(tableName).getSQL();
         jdbcTemplate.update(dropTable);
     }
