@@ -31,10 +31,10 @@ public class CatalogDataService implements DirectoryDataService<CatalogDto, Cata
     @Override
     public CatalogDto getDataById(Integer directoryId, Integer dataId) {
         Directory directory = directoryService.getById(directoryId);
-        CatalogDataDto dataForDirectory = catalogDataRepository.findDataForDirectoryById(directory, dataId);
+        List<CatalogDataDto> dataForDirectory = catalogDataRepository.findDataForDirectoryById(directory, dataId);
         return CatalogDto.builder()
                 .directory(directory)
-                .data(List.of(dataForDirectory))
+                .data(dataForDirectory)
                 .build();
     }
 
@@ -42,10 +42,10 @@ public class CatalogDataService implements DirectoryDataService<CatalogDto, Cata
     @Transactional
     public CatalogDto insertData(Integer directoryId, CatalogDataDto data) {
         Directory directory = directoryService.getById(directoryId);
-        CatalogDataDto inserted = catalogDataRepository.insertData(directory, data);
+        List<CatalogDataDto> inserted = catalogDataRepository.insertData(directory, data);
         return CatalogDto.builder()
                 .directory(directory)
-                .data(List.of(inserted))
+                .data(inserted)
                 .build();
     }
 

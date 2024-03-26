@@ -6,6 +6,7 @@ import com.testproject.directory.entity.Directory;
 import com.testproject.directory.repository.DirectoryDataRepository;
 import com.testproject.directory.util.TableUtil;
 import lombok.RequiredArgsConstructor;
+import org.jooq.CommonTableExpression;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,8 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.sql.PreparedStatement.RETURN_GENERATED_KEYS;
-import static org.jooq.impl.DSL.field;
-import static org.jooq.impl.DSL.table;
+import static org.jooq.impl.DSL.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -40,21 +40,22 @@ public class CatalogDataRepository implements DirectoryDataRepository<CatalogDat
     }
 
     @Override
-    public CatalogDataDto findDataForDirectoryById(Directory directory, Integer dataId) {
+    public List<CatalogDataDto> findDataForDirectoryById(Directory directory, Integer dataId) {
         String tableLinkName = TableUtil.getLinkName(directory);
         String tableName = TableUtil.getName(directory);
+        List<Field<Object>> ids = selectAllId(directory, dataId);
         String sql = dslContext.select()
                 .from(tableLinkName)
                 .leftJoin(tableName).on(tableLinkName + ".id = " + tableName + ".id")
-                .where(tableName + ".id = " + dataId)
+                .where(field(tableName + ".id").in(ids))
                 .getSQL();
-        Map<String, Object> map = jdbcTemplate.queryForMap(sql);
-        return new CatalogDataDto(directory, map);
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+        return maps.stream().map(map -> new CatalogDataDto(directory, map)).toList();
 
     }
 
     @Override
-    public CatalogDataDto insertData(Directory directory, CatalogDataDto data) {
+    public List<CatalogDataDto> insertData(Directory directory, CatalogDataDto data) {
         int id = insertIntoCatalog(directory, data);
         insertIntoLink(directory, data.getCatalogLink(), id);
         return findDataForDirectoryById(directory, id);
@@ -86,23 +87,44 @@ public class CatalogDataRepository implements DirectoryDataRepository<CatalogDat
 
     @Override
     public void deleteById(Directory directory, Integer id) {
-        deleteLink(directory, id);
-        deleteData(directory, id);
+        List<Field<Object>> fields = selectAllId(directory, id);
+        deleteLink(directory, fields);
+        deleteData(directory, fields);
+    }
+
+    private List<Field<Object>> selectAllId(Directory directory, Integer id) {
+        String tableLinkName = TableUtil.getLinkName(directory);
+        CommonTableExpression<?> ids = name("ids").as(
+                select(field("id"), field("parent_id"))
+                        .from(table(tableLinkName))
+                        .where(field("id").eq(field(id.toString())))
+                        .unionAll(
+                                select(field("cl.id"), field("cl.parent_id"))
+                                        .from(table("ids"))
+                                        .join(table(tableLinkName).as("cl"))
+                                        .on(field("ids.id").eq(field("cl.parent_id"))
+                        )));
+        String allIds = dslContext.withRecursive(ids)
+                .selectFrom(ids)
+                .getSQL();
+        return jdbcTemplate.query(allIds, (rs, rowNum) -> rs.getInt("id")).stream()
+                .map(o -> field(o.toString()))
+                .toList();
     }
 
 
-    private void deleteLink(Directory directory, Integer id) {
+    private void deleteLink(Directory directory, List<Field<Object>> ids) {
         String linkName = TableUtil.getLinkName(directory);
         String delete = dslContext.delete(table(linkName))
-                .where(field("id").eq(field(id.toString())))
+                .where(field("id").in(ids))
                 .getSQL();
         jdbcTemplate.update(delete);
     }
 
-    private void deleteData(Directory directory, Integer id) {
+    private void deleteData(Directory directory, List<Field<Object>> ids) {
         String catalogName = TableUtil.getName(directory);
         String delete = dslContext.delete(table(catalogName))
-                .where(field("id").eq(field(id.toString())))
+                .where(field("id").in(ids))
                 .getSQL();
         jdbcTemplate.update(delete);
     }

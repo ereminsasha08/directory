@@ -23,7 +23,6 @@ public class CatalogStructureRepository implements DirectoryStructureRepository 
         createLink(directory);
     }
 
-
     private void createCatalog(Directory directory) {
         String tableName = TableUtil.getName(directory);
         CreateTableElementListStep table = dslContext.dsl().createTableIfNotExists(tableName);

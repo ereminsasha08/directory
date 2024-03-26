@@ -14,12 +14,12 @@ public class ConstantDataRepository implements DirectoryDataRepository<Object> {
     }
 
     @Override
-    public Object findDataForDirectoryById(Directory directory, Integer id) {
+    public List<Object> findDataForDirectoryById(Directory directory, Integer id) {
         throw new RuntimeException("Not supported");
     }
 
     @Override
-    public Object insertData(Directory directory, Object data) {
+    public List<Object> insertData(Directory directory, Object data) {
         throw new RuntimeException("Not supported");
     }
 
